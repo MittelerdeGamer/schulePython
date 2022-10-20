@@ -6,7 +6,7 @@ if __name__ == '__main__':
     #aufg1()
     #aufg2()
     #aufg3()
-    iptranslator()
+    hex2bin()
 
 
 
