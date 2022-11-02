@@ -3,7 +3,7 @@ from LF05_S560 import *
 
 if __name__ == '__main__':
     print('PyCharm')
-    aufg5()
+    aufg6()
 
 
 

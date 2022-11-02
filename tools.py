@@ -1,5 +1,4 @@
 def iptranslator():
-
     print("\n\t1: IPv4 to binary \n\t2: binary to IPv4 "
           "\n\t3: IPv6 to binary \n\t4: binary to IPv6 "
           "\n\n\tNote: always input delimiter and putt 0 between if empty \n")
@@ -44,7 +43,6 @@ def iptranslator():
 
 
 def hex2bin():
-
     print("\n\t1: Hex to binary \n\t2: binary to Hex \n")
     mode = int(input("Select Mode: "))
     print()
@@ -62,3 +60,17 @@ def hex2bin():
     else:
 
         print("Error \n mode out of bounds")
+
+
+def fakultaet(n):
+    fact = 1
+    for i in range(1, n + 1):
+        fact = fact * i
+    return fact
+
+
+def fakultaetBAD(n):
+    if n == 1:
+        return 1
+    else:
+        return n * fakultaetBAD(n-1)

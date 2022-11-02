@@ -1,4 +1,5 @@
 import random
+from tools import fakultaetBAD
 
 
 def aufg2():
@@ -70,3 +71,8 @@ def aufg5():
             for j in range(0, offset):
                 s = s + " "
             print(s + "\t" + str(i) + " Sterne")
+
+
+def aufg6():
+    n = int(input("Geben sie die Fakultät ein: "))
+    print("Fakultät von " + str(n) + " bertägt: " + str(fakultaetBAD(n)))
