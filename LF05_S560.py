@@ -49,7 +49,7 @@ def aufg4():
 
 
 def aufg5():
-    anzahl = 8
+    anzahl = 20
 
     odd = 0
     if anzahl % 2 == 0:
