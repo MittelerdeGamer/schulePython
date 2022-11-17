@@ -11,7 +11,7 @@ def aufg2():
         print("Geben Sie die {0}. Temperatur in ° C ein".format(i + 1))
         eingabe = float(input())
         temperaturen.append(eingabe)  # Element am Ende der Liste hinzufügen
-        summe = summe + temperaturen[i]  # auf Listenelement zugreifen
+        summe = summe + eingabe  # Summe von allen Werten
         i = i + 1
     durchschnitt = summe / anzahl
 
@@ -43,7 +43,7 @@ def aufg3():
 
 
 def aufg4():
-    for i in range(0, 20):
+    for i in range(0, 21):
         if i % 2 == 0:
             print(i)
 
