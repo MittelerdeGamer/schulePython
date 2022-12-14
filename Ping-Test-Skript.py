@@ -24,6 +24,11 @@ def ipListeAuflisten():
     print(data)
 
 
+def appendToFile(datafile, ip):
+    file = open(datafile, 'a')
+    file.write("\n" + ip)
+
+
 def pingTest():
     data = readFile("C:\data\hostliste.txt")
     data = data.split("\n")
@@ -32,6 +37,10 @@ def pingTest():
             print("Der Ping für " + str(ip) + " war erfolgreich")
         else:
             print("Der Ping für " + str(ip) + " war nicht erfolgreich")
+
+
+def ipHinzufügen():
+
 
 
 if __name__ == '__main__':
@@ -51,7 +60,7 @@ if __name__ == '__main__':
             print("IP-Liste auflisten")
             ipListeAuflisten()
         elif select == 2:
-            print("2")
+            print("IP hinzufügen")
         elif select == 3:
             print("3")
         elif select == 4:
