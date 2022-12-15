@@ -19,18 +19,65 @@ def ping(host):
         return False
 
 
-def ipListeAuflisten():
-    data = readFile("C:\data\hostliste.txt")
+def appendToFile(datafile, string):
+    try:
+        file = open(datafile, 'a')
+        file.write("\n" + string)
+        file.close()
+        return True
+    except:
+        return False
+
+
+def writeToFile(datafile, string):
+    try:
+        file = open(datafile, 'w')
+        file.write(string)
+        file.close()
+        return True
+    except:
+        return False
+
+
+def ipListeAuflisten(datafile):
+    data = readFile(datafile)
     print(data)
 
 
-def appendToFile(datafile, ip):
-    file = open(datafile, 'a')
-    file.write("\n" + ip)
+def ipHinzufügen(datafile):
+    print("Welche IP soll hinzugefügt werden? \tz.B.: xxx.xxx.xxx.xxx oder google.com")
+    ip = input("IP :")
+    if appendToFile(datafile, ip):
+        print("IP erfolgreich in die Datei geschrieben")
+    else:
+        print("Fehler beim schreiben in die Datei")
 
 
-def pingTest():
-    data = readFile("C:\data\hostliste.txt")
+def ipEntfernen(datafile):
+    print("Welche IP soll entfernt werden? \tz.B.: xxx.xxx.xxx.xxx oder google.com")
+    ip = input("IP :")
+    data = readFile(datafile).split("\n")
+    counter = -1
+    stringFile = "127.0.0.1"
+    for entry in data:
+        if (entry == ip) or (entry == "127.0.0.1"):
+            counter = counter + 1
+        else:
+            # write back to stringFile
+            stringFile = stringFile + "\n" + entry
+    if writeToFile(datafile, stringFile):
+        if counter < 0:
+            print("etwas ist schief gelaufen")
+        elif counter == 0:
+            print("Die IP: " + ip + " wurde nicht gefunden")
+        else:
+            print("Die IP: " + ip + " wurde " + str(counter) + " mal gefunden und entfernt")
+    else:
+        print("Fehler beim schreiben in die Datei")
+
+
+def pingTest(datafile):
+    data = readFile(datafile)
     data = data.split("\n")
     for ip in data:
         if ping(ip) == True:
@@ -39,12 +86,9 @@ def pingTest():
             print("Der Ping für " + str(ip) + " war nicht erfolgreich")
 
 
-def ipHinzufügen():
-
-
-
 if __name__ == '__main__':
-    print('Ping-Test-Skript')
+    print('\nPing-Test-Skript')
+    datafile = "C:\data\hostliste.txt"
     running = True
     while (running):
         print("""
@@ -54,19 +98,25 @@ if __name__ == '__main__':
 4\tPing-Test durchführen
 
 0\tBeenden""")
-        select = int(input())
+        print()
+        select = int(input("Wähle eine Funktion aus: "))
+        print()
 
         if select == 1:
-            print("IP-Liste auflisten")
-            ipListeAuflisten()
+            print("IP-Liste auflisten\n")
+            ipListeAuflisten(datafile)
         elif select == 2:
-            print("IP hinzufügen")
+            print("IP hinzufügen\n")
+            ipHinzufügen(datafile)
         elif select == 3:
-            print("3")
+            print("IP entfernen\n")
+            ipEntfernen(datafile)
         elif select == 4:
-            print("Ping-Test durchführen")
-            pingTest()
+            print("Ping-Test durchführen\n")
+            pingTest(datafile)
         elif select == 0:
             running = False
+            exit()
         else:
-            print(str(select) + " ist eine ungültige Eingabe!\n--------------------------------")
+            print(str(select) + " ist eine ungültige Eingabe!")
+        print("\n--------------------------------")
