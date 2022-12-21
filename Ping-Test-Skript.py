@@ -1,8 +1,6 @@
-import datetime
 import subprocess
 import os
 import time
-import sys
 
 
 def validate_ip(ipaddr):
@@ -27,6 +25,7 @@ def file_exists(exits_file):
 
 def read_file(read_datafile):
     # this is a basic funktion to read data from a file
+    time.sleep(1)
     success = False
     count = 0
     data = ""
@@ -50,8 +49,9 @@ def is_valid_file(valid_datafile):
     # this is a basic funktion to check if a file is valid
     data = read_file(valid_datafile).splitlines()
     for ip in data:
-        if not validate_ip(ip):
-            return False
+        if not ping(ip):
+            if not validate_ip(ip):
+                return False
     return True
 
 
