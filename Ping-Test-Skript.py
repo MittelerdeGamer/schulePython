@@ -3,23 +3,37 @@ import os
 import time
 
 
+def validate_ip(ipaddr):
+    ip_sublist = ipaddr.split('.')
+    if len(ip_sublist) != 4:
+        return False
+    for part in ip_sublist:
+        if not part.isdigit():
+            return False
+        i = int(part)
+        if i < 0 or i > 255:
+            return False
+    return True
+
+
 def file_exists(exits_file):
     # this is a basic funktion to check if a file exists
     return os.path.isfile(exits_file)
-    time.sleep(1)
 
 
 def read_file(read_datafile):
     # this is a basic funktion to read data from a file
+    time.sleep(1)
     success = False
     count = 0
     data = ""
-    while not success and count<3:
+    while not success and count < 3:
         count = count + 1
         try:
             file = open(read_datafile, "r")
             data = file.read()
             file.close()
+            success = True
         except:
             print("Die Datei " + read_datafile + " konnte nicht geöfnet werden\nErneuter Versuch in 3 sec")
             time.sleep(3)
@@ -29,14 +43,14 @@ def read_file(read_datafile):
         exit("Abbrechen Die Datei " + read_datafile + " konnte nicht geöfnet werden")
 
 
-
 def is_valid_file(valid_datafile):
     # this is a basic funktion to check if a file is valid
     data = read_file(valid_datafile).split("\n")
-    if data[0] == "127.0.0.1":
-        return True
-    else:
-        return False
+    for ip in data:
+        if not ping(ip):
+            if not validate_ip(ip):
+                return False
+    return True
 
 
 def ping(host):
@@ -181,20 +195,25 @@ def file_select():
         select = input("Wähle eine Funktion aus: ")  # get the user input for selection
         # select the funktion which the user selected
         if select == "1":
-            print("\nIP-Datei auswählen\n")
-
+            print("\nIP-Datei auswählen")
+            inputfile = input("Bitte geben sie den Pfad zur Datei an: ")
+            if file_exists(inputfile):
+                print("Datei", inputfile, " wird ausgewählt")
+                file_found = True
+            else:
+                print("Die Datei ", inputfile, " existiert nicht")
         elif select == "2":
             print("\nIP-Datei erstellen")
 
         elif select == "0":
-            running = False
-            print("\nMenu wird beendet...")
+            exit("\nPing-Test-Skript wird beendet...")
         else:
             print("\n" + str(select) + " ist eine ungültige Eingabe!")
         print("\n--------------------------------")  # print a line to better split the actions
-    main_menu(inputfile)
+    return inputfile
 
 
 if __name__ == '__main__':
     print('\nPing-Test-Skript')
-    read_file("test.txt")
+    datafile = file_select()
+    main_menu(datafile)
