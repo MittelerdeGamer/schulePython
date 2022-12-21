@@ -1,15 +1,42 @@
 import subprocess
+import os
+import time
+
+
+def file_exists(exits_file):
+    # this is a basic funktion to check if a file exists
+    return os.path.isfile(exits_file)
+    time.sleep(1)
 
 
 def read_file(read_datafile):
     # this is a basic funktion to read data from a file
-    try:
-        file = open(read_datafile, "r")
-        data = file.read()
-        file.close()
+    success = False
+    count = 0
+    data = ""
+    while not success and count<3:
+        count = count + 1
+        try:
+            file = open(read_datafile, "r")
+            data = file.read()
+            file.close()
+        except:
+            print("Die Datei " + read_datafile + " konnte nicht geöfnet werden\nErneuter Versuch in 3 sec")
+            time.sleep(3)
+    if success:
         return data
-    except:
-        exit("Error Die Datei konnte nicht geöfnet werden")
+    else:
+        exit("Abbrechen Die Datei " + read_datafile + " konnte nicht geöfnet werden")
+
+
+
+def is_valid_file(valid_datafile):
+    # this is a basic funktion to check if a file is valid
+    data = read_file(valid_datafile).split("\n")
+    if data[0] == "127.0.0.1":
+        return True
+    else:
+        return False
 
 
 def ping(host):
@@ -141,18 +168,33 @@ def main_menu(menu_datafile):
 
 
 def file_select():
-    print("IP-Datei auswählen")
-    print("""
-    1\tIP-Datei
-    2\tIP hinzufügen
-    3\tIP entfernen
-    4\tPing-Test durchführen
+    print("\nIP-Datei auswählen")
+    file_found = False
+    inputfile = ""
+    while not file_found:
+        print("""
+    1\tIP-Datei auswählen
+    2\tIP-Datei erstellen
 
-        0\tBeenden
+    0\tBeenden
         """)
-    main_menu("C:\\data\\hostliste.txt")
+        select = input("Wähle eine Funktion aus: ")  # get the user input for selection
+        # select the funktion which the user selected
+        if select == "1":
+            print("\nIP-Datei auswählen\n")
+
+        elif select == "2":
+            print("\nIP-Datei erstellen")
+
+        elif select == "0":
+            running = False
+            print("\nMenu wird beendet...")
+        else:
+            print("\n" + str(select) + " ist eine ungültige Eingabe!")
+        print("\n--------------------------------")  # print a line to better split the actions
+    main_menu(inputfile)
 
 
 if __name__ == '__main__':
     print('\nPing-Test-Skript')
-
+    read_file("test.txt")
