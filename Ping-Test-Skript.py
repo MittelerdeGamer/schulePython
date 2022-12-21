@@ -1,3 +1,4 @@
+import datetime
 import subprocess
 import os
 import sys
@@ -58,8 +59,8 @@ def is_valid_file(valid_datafile):
 
 def ping(host):
     # this is a simplification of the ping process
-    ping = subprocess.run(["ping", "-n", "1", host], stdout=subprocess.PIPE)
-    if ping.returncode == 0:
+    ping_result = subprocess.run(["ping", "-n", "1", host], stdout=subprocess.PIPE)
+    if ping_result.returncode == 0:
         return True
     else:
         return False
@@ -120,7 +121,7 @@ def ip_entfernen(entfernen_datafile):
     data = read_file(entfernen_datafile).splitlines()  # get the current data from the datafile and split it to a list
     counter = -1  # counter to count the removed IP-Address
     # this is the "stingFile" with the static IP-Address that will overwrite the current datafile
-    stringFile = "127.0.0.1"
+    string_file = "127.0.0.1"
     for entry in data:
         # every line from the datafile is checked if it contains the IP-Address to remove
         if (entry == ip) or (entry == "127.0.0.1"):
@@ -128,9 +129,9 @@ def ip_entfernen(entfernen_datafile):
             counter = counter + 1  # the counter is to count how often the IP-Address was present
         else:
             # write entry to stringFile
-            stringFile = stringFile + "\n" + entry
+            string_file = string_file + "\n" + entry
     # write the stringFile to the datafile and respond the Result
-    if write_to_file(entfernen_datafile, stringFile):
+    if write_to_file(entfernen_datafile, string_file):
         if counter < 0:
             print("etwas ist schief gelaufen")
         elif counter == 0:
@@ -160,7 +161,7 @@ def main_menu(menu_datafile):
     print('\nPing-Test-Skript-Menu')
     running = True  # this boolean is used to run the main menu and to exit it
     # this loop runs the main menu again after every function
-    while (running):
+    while running:
         # this print() is displaying the funktion selection from a long string
         print("""
     1\tIP-Liste auflisten
