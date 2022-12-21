@@ -1,6 +1,8 @@
+import datetime
 import subprocess
 import os
 import time
+import sys
 
 
 def validate_ip(ipaddr):
@@ -18,12 +20,13 @@ def validate_ip(ipaddr):
 
 def file_exists(exits_file):
     # this is a basic funktion to check if a file exists
-    return os.path.isfile(exits_file)
+    returnvalue = os.path.isfile(exits_file)
+    time.sleep(1)
+    return returnvalue
 
 
 def read_file(read_datafile):
     # this is a basic funktion to read data from a file
-    time.sleep(1)
     success = False
     count = 0
     data = ""
@@ -45,11 +48,10 @@ def read_file(read_datafile):
 
 def is_valid_file(valid_datafile):
     # this is a basic funktion to check if a file is valid
-    data = read_file(valid_datafile).split("\n")
+    data = read_file(valid_datafile).splitlines()
     for ip in data:
-        if not ping(ip):
-            if not validate_ip(ip):
-                return False
+        if not validate_ip(ip):
+            return False
     return True
 
 
@@ -93,8 +95,15 @@ def ip_liste_auflisten(liste_datafile):
 def ip_hinzufuegen(hinzufuegen_datafile):
     # this funktion is for appending an IP-Address to the content of the datafile
     # get the IP-Address
-    print("Welche IP soll hinzugefügt werden? \tz.B.: xxx.xxx.xxx.xxx oder google.com")
-    ip = input("IP :")
+    valid_ip = False
+    ip = ""
+    while not valid_ip:
+        print("Welche IP soll hinzugefügt werden? \tz.B.: xxx.xxx.xxx.xxx oder google.com")
+        ip = input("IP :")
+        if validate_ip(ip):
+            valid_ip = True
+        else:
+            print("Die eingegebene IP-Adresse: ", ip, " ist ungültig")
     # add the IP-Address to the file and respond the result
     if append_to_file(hinzufuegen_datafile, ip):
         print("IP erfolgreich in die Datei geschrieben")
@@ -107,7 +116,7 @@ def ip_entfernen(entfernen_datafile):
     # get the IP-Address
     print("Welche IP soll entfernt werden? \tz.B.: xxx.xxx.xxx.xxx oder google.com")
     ip = input("IP :")
-    data = read_file(entfernen_datafile).split("\n")  # get the current data from the datafile and split it to a list
+    data = read_file(entfernen_datafile).splitlines()  # get the current data from the datafile and split it to a list
     counter = -1  # counter to count the removed IP-Address
     # this is the "stingFile" with the static IP-Address that will overwrite the current datafile
     stringFile = "127.0.0.1"
@@ -133,13 +142,14 @@ def ip_entfernen(entfernen_datafile):
 
 def ping_test(ping_datafile):
     # this funktion is for pinging all IP-Addresses present in the datafile
-    data = read_file(ping_datafile).split("\n")  # get the content of the datafile and split it to a list
+    data = read_file(ping_datafile).splitlines()  # get the content of the datafile and split it to a list
     # every IP from the datafile is pinged and respond the result
     for ip in data:
+        timestamp = datetime.datetime.now().strftime("%d.%b %Y %H:%M:%S")
         if ping(ip):
-            print("Der Ping für " + str(ip) + " war erfolgreich")
+            print(timestamp, "Der Ping für " + str(ip) + " war erfolgreich")
         else:
-            print("Der Ping für " + str(ip) + " war nicht erfolgreich")
+            print(timestamp, "Der Ping für " + str(ip) + " war nicht erfolgreich")
 
 
 def main_menu(menu_datafile):
@@ -195,16 +205,36 @@ def file_select():
         select = input("Wähle eine Funktion aus: ")  # get the user input for selection
         # select the funktion which the user selected
         if select == "1":
-            print("\nIP-Datei auswählen")
+            print("\nIP-Datei auswählen\n")
             inputfile = input("Bitte geben sie den Pfad zur Datei an: ")
             if file_exists(inputfile):
                 print("Datei", inputfile, " wird ausgewählt")
+                if not is_valid_file(inputfile):
+                    print("Die Datei enthält ungültige IP-Adressen")
                 file_found = True
             else:
                 print("Die Datei ", inputfile, " existiert nicht")
         elif select == "2":
-            print("\nIP-Datei erstellen")
-
+            print("\nIP-Datei erstellen\n")
+            inputfile = input("Bitte geben sie den Pfad zur Datei an: ")  # .replace("\n", "\\n").replace("\t", "\\t")
+            # inputfile.replace("\r", "\\r").replace("\b", "\\b").replace("\f", "\\f")
+            if file_exists(inputfile):
+                print("Overwriting file: ", inputfile)
+            valid_ip = False
+            ip = ""
+            while not valid_ip:
+                print("Welche IP soll hinzugefügt werden? \tz.B.: xxx.xxx.xxx.xxx oder google.com")
+                ip = input("IP :")
+                if validate_ip(ip):
+                    valid_ip = True
+                else:
+                    print("Die eingegebene IP-Adresse: ", ip, " ist ungültig")
+                # add the IP-Address to the file and respond the result
+            if write_to_file(inputfile, ip):
+                print("IP erfolgreich in die Datei geschrieben")
+                file_found = True
+            else:
+                print("Fehler beim schreiben in die Datei")
         elif select == "0":
             exit("\nPing-Test-Skript wird beendet...")
         else:
@@ -214,6 +244,10 @@ def file_select():
 
 
 if __name__ == '__main__':
-    print('\nPing-Test-Skript')
-    datafile = file_select()
-    main_menu(datafile)
+    if len(sys.argv) > 1:
+        if file_exists(sys.argv[1]):
+            print("Automated Ping Process")
+    else:
+        print('\nPing-Test-Skript')
+        datafile = file_select()
+        main_menu(datafile)
