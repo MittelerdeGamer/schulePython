@@ -1,4 +1,5 @@
 import datetime
+import getopt
 import subprocess
 import os
 import sys
@@ -235,10 +236,39 @@ def file_select():
     return inputfile
 
 
+def with_args(argv):
+    inputfile = ""
+    outputfile = ""
+    waittime = 60
+    print("argv: ", argv)
+    try:
+        opts, args = getopt.getopt(argv, "hi:o:t:", ["ifile=", "ofile=", "wtime="])
+    except getopt.GetoptError:
+        print("\nPing-Test-Skript.py -i <inputfile> -o <outputfile> -t <waittime>\n")
+        sys.exit(2)
+    for opt, arg in opts:
+        if opt == "-h":
+            print("""
+Ping-Test-Skript.py -i <inputfile> -o <outputfile> -t <waittime>
+    -i <inputfile>  File with IP-Addresses that should be pinged
+    -o <outputfile> File where the results are stored (results will always be presented on the console)
+    -t <waittime>   The time between each iteration through the inputfile (Standard = 60)
+    """)
+            sys.exit()
+        elif opt in ("-i", "--ifile"):
+            inputfile = arg
+        elif opt in ("-o", "--ofile"):
+            outputfile = arg
+        elif opt in ("-i", "--wtime"):
+            waittime = arg
+    print("inputfile: ", inputfile)
+    print("outputfile: ", outputfile)
+    print("waittime: ", waittime)
+
+
 if __name__ == '__main__':
     if len(sys.argv) > 1:
-        if file_exists(sys.argv[1]):
-            print("Automated Ping Process")
+        with_args(sys.argv[1:])
     else:
         print('\nPing-Test-Skript')
         datafile = file_select()
