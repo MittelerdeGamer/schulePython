@@ -244,12 +244,11 @@ def with_args(argv):
     try:
         opts, args = getopt.getopt(argv, "hi:o:t:", ["ifile=", "ofile=", "wtime="])
     except getopt.GetoptError:
-        print("\nPing-Test-Skript.py -i <inputfile> -o <outputfile> -t <waittime>\n")
+        print("Ping-Test-Skript.py -i <inputfile> -o <outputfile> -t <waittime>\n")
         sys.exit(2)
     for opt, arg in opts:
         if opt == "-h":
-            print("""
-Ping-Test-Skript.py -i <inputfile> -o <outputfile> -t <waittime>
+            print("""Ping-Test-Skript.py -i <inputfile> -o <outputfile> -t <waittime>
     -i <inputfile>  File with IP-Addresses that should be pinged
     -o <outputfile> File where the results are stored (results will always be presented on the console)
     -t <waittime>   The time between each iteration through the inputfile (Standard = 60)
@@ -267,9 +266,10 @@ Ping-Test-Skript.py -i <inputfile> -o <outputfile> -t <waittime>
 
 
 if __name__ == '__main__':
+    print('\nPing-Test-Skript')
     if len(sys.argv) > 1:
+        print("\nEntering automated Ping Mode...\n")
         with_args(sys.argv[1:])
     else:
-        print('\nPing-Test-Skript')
         datafile = file_select()
         main_menu(datafile)
