@@ -4,6 +4,8 @@ import subprocess
 import os
 import sys
 import time
+from inputimeout import inputimeout, TimeoutOccurred
+
 
 
 def validate_ip(ipaddr):
@@ -150,9 +152,9 @@ def ping_test(ping_datafile):
     for ip in data:
         timestamp = datetime.datetime.now().strftime("%d.%b %Y %H:%M:%S")
         if ping(ip):
-            print(timestamp, "Der Ping für " + str(ip) + " war erfolgreich")
+            print(timestamp + " | Der Ping für " + str(ip) + " war erfolgreich")
         else:
-            print(timestamp, "Der Ping für " + str(ip) + " war nicht erfolgreich")
+            print(timestamp + " | Der Ping für " + str(ip) + " war nicht erfolgreich")
 
 
 def main_menu(menu_datafile):
@@ -236,11 +238,32 @@ def file_select():
     return inputfile
 
 
-def with_args(argv):
+def automated_ping(ifile, ofile, wtime):
+    running = True
+    while running:
+        data = read_file(ifile).splitlines()
+        for ip in data:
+            timestamp = datetime.datetime.now().strftime("%d.%b %Y %H:%M:%S")
+            if ping(ip):
+                result = (timestamp + " | Der Ping für " + str(ip) + " war erfolgreich")
+                append_to_file(ofile, result)
+                print(result)
+            else:
+                result = (timestamp + " | Der Ping für " + str(ip) + " war nicht erfolgreich")
+                append_to_file(ofile, result)
+                print(result)
+        try:
+            c = inputimeout(prompt='\nPress x to exit\n', timeout=wtime)
+            if c.__contains__("x"):
+                running = False
+        except TimeoutOccurred:
+            print("continue ping requests...\n")
+
+
+def ping_s_with_args(argv):
     inputfile = ""
     outputfile = ""
     waittime = 60
-    print("argv: ", argv)
     try:
         opts, args = getopt.getopt(argv, "hi:o:t:", ["ifile=", "ofile=", "wtime="])
     except getopt.GetoptError:
@@ -249,27 +272,40 @@ def with_args(argv):
     for opt, arg in opts:
         if opt == "-h":
             print("""Ping-Test-Skript.py -i <inputfile> -o <outputfile> -t <waittime>
-    -i <inputfile>  File with IP-Addresses that should be pinged
-    -o <outputfile> File where the results are stored (results will always be presented on the console)
-    -t <waittime>   The time between each iteration through the inputfile (Standard = 60)
+    -i <inputfile>  needed  File with IP-Addresses that should be pinged
+    -o <outputfile>         File where the results are stored (results will always be presented on the console)
+                            Standard output is the inputfile with ".log" appended
+    -t <waittime>           The time between each iteration through the inputfile (Standard = 60)
     """)
             sys.exit()
         elif opt in ("-i", "--ifile"):
             inputfile = arg
         elif opt in ("-o", "--ofile"):
             outputfile = arg
-        elif opt in ("-i", "--wtime"):
-            waittime = arg
-    print("inputfile: ", inputfile)
-    print("outputfile: ", outputfile)
-    print("waittime: ", waittime)
+        elif opt in ("-t", "--wtime"):
+            waittime = int(arg)
+    if file_exists(inputfile):
+        if not outputfile:
+            outputfile = inputfile + ".log"
+        if file_exists(outputfile):
+            print("Outfile:", outputfile, "already exists\nOVERWRITING!!!\n")
+        else:
+            print("Outfile:", outputfile, "doesn´t exist\nCreating file!\n")
+        write_to_file(outputfile, "Inputfile: " + inputfile)
+        automated_ping(inputfile, outputfile, waittime)
+    else:
+        print("Inputfile must be a valid file\n")
+    # Debug
+    print("inputfile:", inputfile)
+    print("outputfile:", outputfile)
+    print("waittime:", waittime)
 
 
 if __name__ == '__main__':
     print('\nPing-Test-Skript')
     if len(sys.argv) > 1:
         print("\nEntering automated Ping Mode...\n")
-        with_args(sys.argv[1:])
+        ping_s_with_args(sys.argv[1:])
     else:
         datafile = file_select()
         main_menu(datafile)
