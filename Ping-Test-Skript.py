@@ -7,7 +7,6 @@ import time
 from inputimeout import inputimeout, TimeoutOccurred
 
 
-
 def validate_ip(ipaddr):
     ip_sublist = ipaddr.split('.')
     if len(ip_sublist) != 4:
@@ -171,6 +170,7 @@ def main_menu(menu_datafile):
     2\tIP hinzufügen
     3\tIP entfernen
     4\tPing-Test durchführen
+    5\tAutomated-Ping-Test durchführen
 
     0\tBeenden
     """)
@@ -188,6 +188,9 @@ def main_menu(menu_datafile):
         elif select == "4":
             print("\nPing-Test durchführen\n")
             ping_test(menu_datafile)
+        elif select == "5":
+            print("\nPing-Test durchführen\n")
+            os.system("start cmd /k python.exe " + __file__ + " -i " + menu_datafile)
         elif select == "0":
             running = False
             print("\nMenu wird beendet...")
@@ -256,7 +259,7 @@ def automated_ping(ifile, ofile, wtime):
             c = inputimeout(prompt='\nPress x to exit\n', timeout=wtime)
             if c.__contains__("x"):
                 running = False
-        except TimeoutOccurred:
+        except:
             print("continue ping requests...\n")
 
 
