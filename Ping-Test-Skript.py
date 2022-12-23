@@ -1,10 +1,10 @@
 import datetime
 import getopt
+import msvcrt
 import subprocess
 import os
 import sys
 import time
-from inputimeout import inputimeout, TimeoutOccurred
 
 
 def validate_ip(ipaddr):
@@ -255,12 +255,20 @@ def automated_ping(ifile, ofile, wtime):
                 result = (timestamp + " | Der Ping für " + str(ip) + " war nicht erfolgreich")
                 append_to_file(ofile, result)
                 print(result)
-        try:
-            c = inputimeout(prompt='\nPress x to exit\n', timeout=wtime)
-            if c.__contains__("x"):
-                running = False
-        except:
-            print("continue ping requests...\n")
+        count = wtime * 100
+        while count > 0:
+            if msvcrt.kbhit():
+                if "x" == msvcrt.getch():
+                    sys.exit()
+            count = count + 1
+            time.sleep(0.01)
+        print("continue ping requests...\n")
+#        try:
+#            c = inputimeout(prompt='\nPress x to exit\n', timeout=wtime)
+#            if c.__contains__("x"):
+#                running = False
+#        except:
+#            print("continue ping requests...\n")
 
 
 def ping_s_with_args(argv):
