@@ -256,13 +256,15 @@ def automated_ping(ifile, ofile, wtime):
                 append_to_file(ofile, result)
                 print(result)
         count = wtime * 100
+        print("\nPress Ctrl+C to exit\n")
         while count > 0:
-            if msvcrt.kbhit():
-                if "x" == msvcrt.getch():
-                    sys.exit()
-            count = count + 1
+            count = count - 1
+            if count % 1000 == 0:
+                print(str(int(count/100)) + " Sekunden")
             time.sleep(0.01)
-        print("continue ping requests...\n")
+        print("\ncontinue ping requests...\n")
+
+
 #        try:
 #            c = inputimeout(prompt='\nPress x to exit\n', timeout=wtime)
 #            if c.__contains__("x"):
