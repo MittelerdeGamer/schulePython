@@ -224,8 +224,7 @@ def file_select():
                 print("Die Datei ", inputfile, " existiert nicht")
         elif select == "2":
             print("\nIP-Datei erstellen\n")
-            inputfile = input("Bitte geben sie den Pfad zur Datei an: ")  # .replace("\n", "\\n").replace("\t", "\\t")
-            # inputfile.replace("\r", "\\r").replace("\b", "\\b").replace("\f", "\\f")
+            inputfile = input("Bitte geben sie den Pfad zur Datei an: ")
             if file_exists(inputfile):
                 print("Overwriting file: ", inputfile)
             if write_to_file(inputfile, "127.0.0.1"):
