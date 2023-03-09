@@ -1,11 +1,17 @@
 from tools import *
-from LF05_05 import *
+from Counter import Counter
 
 if __name__ == '__main__':
     print('PyCharm')
-    aufg1("C:\data\hanau.txt", 2)
-    aufg2("C:\data\Hanau_komplex.txt",range(2,11))
+    clicker1 = Counter()
+    clicker2 = Counter()
 
+    for i in range(0,5):
+        clicker1.count()
+        for i in range(0,5):
+            clicker2.count()
+
+    print(f"Clicker1: {clicker1.getCount()} \nClicker2: {clicker2.getCount()}")
 
 
 
