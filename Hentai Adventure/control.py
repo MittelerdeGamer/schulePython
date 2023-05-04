@@ -1,5 +1,5 @@
 import random
-from enemies import *
+from enemies import Enemy
 from hero import Hero
 
 
@@ -52,15 +52,15 @@ class Control:
         print("2 - run")
         selectedAction = input("Please choose: ")
         if selectedAction == "1":
-            if self.simulateFight():
-                #Win
-                print(self.__hero.getName() + " won the fight.")
-                for f in enemyList:
+            for f in enemyList:
+                if self.simulateFight():
+                    #Win
+                    print(self.__hero.getName() + " won the fight.")
                     self.__hero.lootGold(f.getLootGold())
-            else:
-                #Lose
-                print(self.__hero.getName() + " lost the fight.")
-                self.__hero.fightLost()
+                else:
+                    #Lose
+                    print(self.__hero.getName() + " lost the fight.")
+                    self.__hero.fightLost()
         else:
             print(self.__hero.getName() + " ran away.")
 
