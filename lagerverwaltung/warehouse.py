@@ -58,8 +58,8 @@ class Warehouse:
         # mit 3 Reihen á 10 Regalen
         for i in range(1, 4):
             r = Row(str(i))
-            for i in range(1, 11):
-                s = Shelf(str(i))
+            for j in range(1, 11):
+                s = Shelf(str(j))
                 r.addShelf(s)
             self.__rows.append(r)
 
@@ -89,7 +89,6 @@ class Warehouse:
 
     def getOverview(self) -> str:
         # TODO: Aufgabe 4
-        rvalue = ""
         rvalue = "Reihe-Regal Items(SKUs)"
         for row in self.__rows:
             for shelve in row.getShelves():
